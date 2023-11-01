@@ -15,3 +15,14 @@ export interface IUser {
 export interface IUserRepository {
   create(user: ICreateUserDto): Promise<IUser>;
 }
+
+type CreationErrorType = "UNIQUE";
+
+export class UserCreationError extends Error {
+  constructor(
+    public readonly type: CreationErrorType,
+    public readonly column: string
+  ) {
+    super();
+  }
+}
