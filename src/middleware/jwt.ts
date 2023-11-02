@@ -2,16 +2,18 @@ import { RequestHandler } from "express";
 import { JsonWebTokenError, JwtPayload, verify } from "jsonwebtoken";
 import { JWT_SECRET } from "../utils/const";
 
+export interface AuthStatus {
+  user: { id: string };
+}
+
 export default class JWTMiddleware {
   constructor() {}
 
-  auth: RequestHandler<
-    unknown,
-    unknown,
-    unknown,
-    unknown,
-    { user: { id: string } }
-  > = (req, res, next) => {
+  auth: RequestHandler<unknown, unknown, unknown, unknown, AuthStatus> = (
+    req,
+    res,
+    next
+  ) => {
     try {
       const token = req.header("Authorization")!.replace("Bearer ", "");
 

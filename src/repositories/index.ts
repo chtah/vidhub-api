@@ -15,4 +15,5 @@ export interface IUser {
 export interface IUserRepository {
   create(user: ICreateUserDto): Promise<IUser>;
   findByUsername(username: string): Promise<User>;
+  findById(id: string): Promise<IUser>;
 }
