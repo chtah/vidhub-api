@@ -10,3 +10,8 @@ export interface ICreateContentDto {
 export interface IContentDto extends Omit<Content, "ownerId" | "id"> {
   postedBy: IUserDto;
 }
+
+export interface IUpdateContentDto {
+  comment: string;
+  rating: number;
+}
