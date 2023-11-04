@@ -15,6 +15,7 @@ export interface IUserHandler {
     unknown,
     AuthStatus
   >;
+  getInfoByUsername: RequestHandler<{ username: string }, IUserDto | IErrorDto>;
 }
 
 export interface IContentHandler {
