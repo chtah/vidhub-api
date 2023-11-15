@@ -1,5 +1,7 @@
 name: Docker build image
 
+on: push
+
 jobs:
   hellow-world:
     runs-on:
