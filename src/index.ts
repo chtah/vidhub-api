@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import express from "express";
-import { createClient } from "redis";
+import { RedisClientType, createClient } from "redis";
 import { IContentRepository, IUserRepository } from "./repositories";
 import UserRepository from "./repositories/user";
 import { IContentHandler, IUserHandler } from "./handlers";
@@ -8,23 +8,32 @@ import UserHandler from "./handlers/user";
 import JWTMiddleware from "./middleware/jwt";
 import ContentRepository from "./repositories/content";
 import ContentHandler from "./handlers/content";
-import cors from "cors";
+import { REDIS_URL } from "./utils/const";
+import BlacklistRepository from "./repositories/backlist";
 
 const clnt = new PrismaClient();
 const PORT = Number(process.env.PORT || 8888);
 const app = express();
-//const redisClnt = createClient();
+const redisClnt: RedisClientType = createClient({
+  url: REDIS_URL,
+});
 
-app.use(cors());
+clnt
+  .$connect()
+  .then(() => redisClnt.connect())
+  .catch((err) => {
+    console.error("Error", err);
+  });
 
-const userRepo: IUserRepository = new UserRepository(clnt);
-//const blacklistRepo: IBlacklistRepository = new BlacklistRepository(clnt);
-const userHandler: IUserHandler = new UserHandler(userRepo);
+const blacklistRepo = new BlacklistRepository(redisClnt);
 
+const userRepo = new UserRepository(clnt);
 const contentRepo: IContentRepository = new ContentRepository(clnt);
+
+const userHandler = new UserHandler(userRepo, blacklistRepo);
 const contentHandler: IContentHandler = new ContentHandler(contentRepo);
 
-const jwtMiddleware = new JWTMiddleware();
+const jwtMiddleware = new JWTMiddleware(blacklistRepo);
 
 app.use(express.json());
 
@@ -54,7 +63,7 @@ authRouter.post("/login", userHandler.login);
 
 authRouter.get("/me", jwtMiddleware.auth, userHandler.selfcheck);
 
-//authRouter.get("/logout", jwtMiddleware.auth, userHandler.logout);
+authRouter.get("/logout", jwtMiddleware.auth, userHandler.logout);
 
 //---------------------------------------------------------------
 
