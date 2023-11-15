@@ -8,11 +8,9 @@ jobs:
     steps:
       - name: Echo hello-world
         run: echo "Hello, world."
-      - name: Where am i
+      - name: Print current dir
         run: pwd
-      - name: Check out
+      - name: Check out repo
         uses: actions/checkout@v3
-      - name: create file
-        run: touch tah.txt
-      - name: What folder have ?
+      - name: list file
         run: ls
