@@ -10,5 +10,7 @@ jobs:
         run: echo "Hello, world."
       - name: Where am i
         run: pwd
+      - name: Check out
+        uses: touch tah.txt
       - name: What folder have ?
         run: ls
