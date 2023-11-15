@@ -2,10 +2,12 @@ version: "3.8"
 services:
   api:
     build: .
+    #image: chawakorn16/academy-learnhub-api:feat.ci-f1ee1bd
     environment:
       - DATABASE_URL=postgresql://postgres:vidhub-db@pg-db:5432/mydb?schema=public
       - PORT=8080
       - JWT_SECRET=U3YWDUqu7APG0s9L12QZ
+      - REDIS_URL=redis://cache:6379/
     ports:
       - 8080:8080
     depends_on:
@@ -18,6 +20,10 @@ services:
       - learnhub-db-vol:/var/lib/postgresql/data
     ports:
       - 5432:5432
+  cache:
+    image: redis:7.2.3
+    expose:
+      - 6379
 volumes:
   learnhub-db-vol:
     external: true

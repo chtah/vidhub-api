@@ -21,7 +21,7 @@ export interface IUserHandler {
     AuthStatus
   >;
   getInfoByUsername: RequestHandler<{ username: string }, IUserDto | IErrorDto>;
-  // logout: RequestHandler<{}, IMessageDto, undefined, undefined, AuthStatus>;
+  logout: RequestHandler<{}, IMessageDto, undefined, undefined, AuthStatus>;
 }
 
 export interface IContentHandler {

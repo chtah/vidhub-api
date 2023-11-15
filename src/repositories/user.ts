@@ -1,6 +1,6 @@
 import { Prisma, PrismaClient, User } from "@prisma/client";
 import { ICreateUserDto } from "../dto/user";
-import { IUser, IUserRepository } from ".";
+import { IBlacklistRepository, IUser, IUserRepository } from ".";
 
 export const DEFAULT_USER_FIELDS: Prisma.UserSelect = {
   id: true,

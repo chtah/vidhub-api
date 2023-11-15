@@ -3,21 +3,26 @@ import { IUserHandler } from ".";
 import { ICreateUserDto, IUserDto } from "../dto/user";
 import { IErrorDto } from "../dto/error";
 import { hashPassword, verifyPassword } from "../utils/bcrypt";
-import { IUserRepository } from "../repositories";
+import { IBlacklistRepository, IUserRepository } from "../repositories";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { ICredentialDto, ILoginDto } from "../dto/auth";
 import { JwtPayload, sign, verify } from "jsonwebtoken";
-import { JWT_SECRET, REQUIRED_RECORD_NOT_FOUND } from "../utils/const";
+import {
+  JWT_SECRET,
+  REQUIRED_RECORD_NOT_FOUND,
+  getAuthToken,
+} from "../utils/const";
 import { AuthStatus } from "../middleware/jwt";
 import mapToDto from "../utils/user.mapper";
 import { IMessageDto } from "../dto/message";
 
 export default class UserHandler implements IUserHandler {
   private repo: IUserRepository;
-  // private blacklistRepo: IBlacklistRepository;
+  private blacklistRepo: IBlacklistRepository;
 
-  constructor(repo: IUserRepository) {
+  constructor(repo: IUserRepository, blacklistRepo: IBlacklistRepository) {
     this.repo = repo;
+    this.blacklistRepo = blacklistRepo;
   }
 
   public registration: RequestHandler<
@@ -145,22 +150,48 @@ export default class UserHandler implements IUserHandler {
     }
   };
 
-  //   public logout: RequestHandler<
-  //     {},
-  //     IMessageDto,
-  //     undefined,
-  //     undefined,
-  //     AuthStatus
-  //   > = async (req, res) => {
-  //     const authHeader = req.header("Authorization");
-  //     try {
-  //       if (!authHeader)
-  //         return res.status(400).send({ message: "Not found Authorization" });
-  //       const token = authHeader.replace("Bearer ", "").trim();
-  //       const decoded = verify(token, JWT_SECRET) as JwtPayload;
-  //       const exp = decoded.exp;
-  //       if (!exp) return res.status(400).send({ message: "exp is missing" });
-  //       await this.blacklistRepo.addToBlacklist(token, exp);
-  //     } catch {}
-  //   };
+  public logout: RequestHandler<
+    {},
+    IMessageDto,
+    undefined,
+    undefined,
+    AuthStatus
+  > = async (req, res) => {
+    try {
+      const authHeader = req.header("Authorization");
+      if (!authHeader)
+        return res
+          .status(400)
+          .json({
+            message: "Authorization header is expected",
+          })
+          .end();
+      const authToken = getAuthToken(authHeader);
+      const { exp } = verify(authToken, JWT_SECRET) as JwtPayload;
+      if (!exp)
+        return res
+          .status(400)
+          .json({
+            message: "JWT is invalid",
+          })
+          .end();
+
+      await this.blacklistRepo.addToBlacklist(authToken, exp * 1000);
+
+      return res
+        .status(200)
+        .json({
+          message: "You've been logged out",
+        })
+        .end();
+    } catch (error) {
+      console.error(error);
+      return res
+        .status(500)
+        .json({
+          message: "Internal Server Error",
+        })
+        .end();
+    }
+  };
 }

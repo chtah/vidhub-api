@@ -35,7 +35,7 @@ export interface IContentRepository {
   deleteById(id: number): Promise<IContent>;
 }
 
-// export interface IBlacklistRepository {
-//   addToBlacklist(token: string, exp: number): Promise<void>;
-//   isAlreadyBlacklisted(token: string): Promise<boolean>;
-// }
+export interface IBlacklistRepository {
+  addToBlacklist(token: string, exp: number): Promise<void>;
+  isAlreadyBlacklisted(token: string): Promise<boolean>;
+}
