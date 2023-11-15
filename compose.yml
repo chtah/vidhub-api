@@ -1,8 +1,8 @@
 version: "3.8"
 services:
   api:
-    # build: .
-    image: chawakorn16/academy-learnhub-api:feat.ci-f1ee1bd
+    build: .
+    #image: chawakorn16/academy-learnhub-api:feat.ci-f1ee1bd
     environment:
       - DATABASE_URL=postgresql://postgres:vidhub-db@pg-db:5432/mydb?schema=public
       - PORT=8080
