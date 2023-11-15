@@ -7,3 +7,5 @@ export const JWT_SECRET = ENV_JWT_SECRET;
 export const REQUIRED_RECORD_NOT_FOUND = "P2025";
 
 export const UNIQUE_CONSTRAINT_VIOLATION = "P2002";
+
+export const BLACKLIST_REDIS_VALUE = "1";

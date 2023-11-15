@@ -6,13 +6,15 @@ import { hashPassword, verifyPassword } from "../utils/bcrypt";
 import { IUserRepository } from "../repositories";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { ICredentialDto, ILoginDto } from "../dto/auth";
-import { sign } from "jsonwebtoken";
+import { JwtPayload, sign, verify } from "jsonwebtoken";
 import { JWT_SECRET, REQUIRED_RECORD_NOT_FOUND } from "../utils/const";
 import { AuthStatus } from "../middleware/jwt";
 import mapToDto from "../utils/user.mapper";
+import { IMessageDto } from "../dto/message";
 
 export default class UserHandler implements IUserHandler {
   private repo: IUserRepository;
+  // private blacklistRepo: IBlacklistRepository;
 
   constructor(repo: IUserRepository) {
     this.repo = repo;
@@ -142,4 +144,23 @@ export default class UserHandler implements IUserHandler {
       return res.status(500).json({ message: `Internal Server Error` }).end();
     }
   };
+
+  //   public logout: RequestHandler<
+  //     {},
+  //     IMessageDto,
+  //     undefined,
+  //     undefined,
+  //     AuthStatus
+  //   > = async (req, res) => {
+  //     const authHeader = req.header("Authorization");
+  //     try {
+  //       if (!authHeader)
+  //         return res.status(400).send({ message: "Not found Authorization" });
+  //       const token = authHeader.replace("Bearer ", "").trim();
+  //       const decoded = verify(token, JWT_SECRET) as JwtPayload;
+  //       const exp = decoded.exp;
+  //       if (!exp) return res.status(400).send({ message: "exp is missing" });
+  //       await this.blacklistRepo.addToBlacklist(token, exp);
+  //     } catch {}
+  //   };
 }

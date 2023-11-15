@@ -1,0 +1,8 @@
+name: Docker build image
+
+jobs:
+  hellow-world:
+    runs-on:
+    steps:
+      - name: Echo hello-world
+        run: echo "Hello, world."

@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import express from "express";
+import { createClient } from "redis";
 import { IContentRepository, IUserRepository } from "./repositories";
 import UserRepository from "./repositories/user";
 import { IContentHandler, IUserHandler } from "./handlers";
@@ -7,12 +8,17 @@ import UserHandler from "./handlers/user";
 import JWTMiddleware from "./middleware/jwt";
 import ContentRepository from "./repositories/content";
 import ContentHandler from "./handlers/content";
+import cors from "cors";
 
 const clnt = new PrismaClient();
 const PORT = Number(process.env.PORT || 8888);
 const app = express();
+//const redisClnt = createClient();
+
+app.use(cors());
 
 const userRepo: IUserRepository = new UserRepository(clnt);
+//const blacklistRepo: IBlacklistRepository = new BlacklistRepository(clnt);
 const userHandler: IUserHandler = new UserHandler(userRepo);
 
 const contentRepo: IContentRepository = new ContentRepository(clnt);
@@ -47,6 +53,8 @@ app.use("/auth", authRouter);
 authRouter.post("/login", userHandler.login);
 
 authRouter.get("/me", jwtMiddleware.auth, userHandler.selfcheck);
+
+//authRouter.get("/logout", jwtMiddleware.auth, userHandler.logout);
 
 //---------------------------------------------------------------
 

@@ -1,0 +1,24 @@
+version: "3.8"
+services:
+  api:
+    build: .
+    environment:
+      - DATABASE_URL=postgresql://postgres:vidhub-db@pg-db:5432/mydb?schema=public
+      - PORT=8080
+      - JWT_SECRET=U3YWDUqu7APG0s9L12QZ
+    ports:
+      - 8080:8080
+    depends_on:
+      - pg-db
+  pg-db:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=vidhub-db
+    volumes:
+      - learnhub-db-vol:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+volumes:
+  learnhub-db-vol:
+    external: true
+    name: 950e0096d0905d180c02d3a324db20dc0ca30d5c8663122fd1a12482b5b7a730

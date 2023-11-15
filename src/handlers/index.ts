@@ -8,6 +8,7 @@ import {
   ICreateContentDto,
   IUpdateContentDto,
 } from "../dto/content";
+import { IMessageDto } from "../dto/message";
 
 export interface IUserHandler {
   registration: RequestHandler<{}, IUserDto | IErrorDto, ICreateUserDto>;
@@ -20,6 +21,7 @@ export interface IUserHandler {
     AuthStatus
   >;
   getInfoByUsername: RequestHandler<{ username: string }, IUserDto | IErrorDto>;
+  // logout: RequestHandler<{}, IMessageDto, undefined, undefined, AuthStatus>;
 }
 
 export interface IContentHandler {
