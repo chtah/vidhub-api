@@ -11,6 +11,6 @@ jobs:
       - name: Where am i
         run: pwd
       - name: Check out
-        uses: mkdir tah
+        run: touch tah.txt
       - name: What folder have ?
         run: ls
