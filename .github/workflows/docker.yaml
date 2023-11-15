@@ -11,10 +11,8 @@ jobs:
       - name: Where am i
         run: pwd
       - name: Check out
+        uses: actions/checkout@v3
+      - name: create file
         run: touch tah.txt
       - name: What folder have ?
         run: ls
-      - name: add text to file
-        run: echo "To day I study CICID in the morning and Afternoon I will do final project" > tah.txt
-      - name: display file
-        run: cat tah.txt
