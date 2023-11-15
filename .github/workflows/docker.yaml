@@ -25,5 +25,5 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          push: false
+          push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/academy-learnhub-api:${{ github.sha }}
